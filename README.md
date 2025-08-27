@@ -9,28 +9,27 @@ Um **dashboard interativo** desenvolvido com **Streamlit** para gestão e análi
 ## ✨ Funcionalidades
 
 * **📈 Visão Geral Rápida**: Cards com métricas como total de alunos, professores, disciplinas e semestres.
-  ![Exemplo de Visão Geral](assets/overview.png)
+  ![Exemplo de Visão Geral].
 
 * **➕ Cadastro de Dados**: Adicione registros de professores, disciplinas e alunos por semestre.
-  ![Exemplo de Cadastro](assets/add_record.png)
+  ![Exemplo de Cadastro].
 
 * **📋 Visualização da Base**: Tabela interativa com todos os registros.
-  ![Exemplo de Tabela](assets/data_table.png)
-
+  ![Exemplo de Tabela].
 * **💾 Download de Dados**: Exportação completa em **CSV**.
-  ![Download CSV](assets/download_csv.png)
+  ![Download CSV].
 
 * **🔎 Filtros Dinâmicos**: Filtre por semestre, ano, professor ou disciplina.
-  ![Filtros Dinâmicos](assets/filters.png)
+  ![Filtros Dinâmicos].
 
 * **📊 Análises Interativas**:
 
   * **Resumo**: Gráficos de pizza e barras por categoria.
-    ![Resumo](assets/summary.png)
+    ![Resumo].
   * **Comparação**: Compare desempenho de até dois professores ou disciplinas.
-    ![Comparação](assets/comparison.png)
+    ![Comparação].
   * **🔥 Heatmap**: Concentração de alunos ao longo dos semestres.
-    ![Heatmap](assets/heatmap.png)
+    ![Heatmap].
 
 ---
 
