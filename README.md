@@ -1,68 +1,73 @@
-📊 Dashboard de Gestão Acadêmica com Streamlit
-Este é um projeto de um dashboard interativo construído com Streamlit para a gestão e análise de dados acadêmicos, focando em informações sobre professores, disciplinas, semestres e número de alunos.
+# 📊 Dashboard de Gestão Acadêmica com Streamlit
 
-A aplicação permite a visualização, cadastro, filtragem e análise de dados de forma simples e intuitiva, tudo em uma única interface web.
+![Python](https://img.shields.io/badge/python-3.10+-blue) ![Streamlit](https://img.shields.io/badge/streamlit-✔️-orange) ![License](https://img.shields.io/badge/license-MIT-green)
 
-✨ Funcionalidades Principais
-Visão Geral Rápida: Cards que exibem métricas chave como o total de alunos, professores, disciplinas e semestres cadastrados.
+Um **dashboard interativo** desenvolvido com **Streamlit** para gestão e análise de dados acadêmicos, permitindo acompanhar **professores, disciplinas, semestres** e **número de alunos** de forma simples e intuitiva.
 
-Cadastro de Dados: Um formulário expansível para adicionar novos registros de professores, disciplinas e o número de alunos por semestre.
+---
 
-Visualização da Base de Dados: Uma tabela interativa que exibe todos os dados cadastrados.
+## ✨ Funcionalidades
 
-Download de Dados: Botão para baixar a base de dados completa no formato .csv.
+* **📈 Visão Geral Rápida**: Cards com métricas como total de alunos, professores, disciplinas e semestres.
+  ![Exemplo de Visão Geral](assets/overview.png)
 
-Filtros Dinâmicos: Filtre os dados por semestre, ano, professor ou disciplina para análises mais específicas.
+* **➕ Cadastro de Dados**: Adicione registros de professores, disciplinas e alunos por semestre.
+  ![Exemplo de Cadastro](assets/add_record.png)
 
-Análises e Gráficos Interativos:
+* **📋 Visualização da Base**: Tabela interativa com todos os registros.
+  ![Exemplo de Tabela](assets/data_table.png)
 
-Resumo: Gráficos de pizza e de barras que agrupam o número de alunos por categoria (professor, disciplina, etc.).
+* **💾 Download de Dados**: Exportação completa em **CSV**.
+  ![Download CSV](assets/download_csv.png)
 
-Comparação: Compare o desempenho (número de alunos) de até dois professores ou duas disciplinas lado a lado.
+* **🔎 Filtros Dinâmicos**: Filtre por semestre, ano, professor ou disciplina.
+  ![Filtros Dinâmicos](assets/filters.png)
 
-Heatmap: Mapas de calor que mostram a concentração de alunos por disciplina/professor ao longo dos semestres.
+* **📊 Análises Interativas**:
 
-🚀 Como Executar o Projeto
-Para rodar esta aplicação em sua máquina local, siga os passos abaixo.
+  * **Resumo**: Gráficos de pizza e barras por categoria.
+    ![Resumo](assets/summary.png)
+  * **Comparação**: Compare desempenho de até dois professores ou disciplinas.
+    ![Comparação](assets/comparison.png)
+  * **🔥 Heatmap**: Concentração de alunos ao longo dos semestres.
+    ![Heatmap](assets/heatmap.png)
 
-1. Pré-requisitos
-Certifique-se de que você tem o Python instalado. Você precisará instalar as seguintes bibliotecas:
+---
 
-streamlit
+## 🚀 Como Executar
 
-pandas
+### Pré-requisitos
 
-plotly
+Instale o Python e as bibliotecas necessárias:
 
-openpyxl (para manipulação de arquivos Excel)
-
-Você pode instalar todas de uma vez com o seguinte comando:
-
+```bash
 pip install streamlit pandas plotly openpyxl
+```
 
-2. Estrutura de Arquivos
-O projeto utiliza um arquivo Excel para persistir os dados.
+### Estrutura do Projeto
 
-app.py: O código-fonte da aplicação Streamlit (o código que você forneceu).
+* `app.py` – Código-fonte do dashboard.
+* `dados_professores.xlsx` – Base de dados em Excel (criada automaticamente no primeiro uso).
+* `assets/` – Pasta com imagens de exemplo (como mostrado acima).
 
-dados_professores.xlsx: Arquivo Excel que armazena os dados. A aplicação criará este arquivo automaticamente no primeiro uso se ele não existir.
+### Executando a Aplicação
 
-3. Executando a Aplicação
-Salve o código fornecido em um arquivo chamado app.py.
-
-Abra o seu terminal ou prompt de comando.
-
-Navegue até o diretório onde você salvou o arquivo app.py.
-
-Execute o seguinte comando:
-
+```bash
 streamlit run app.py
+```
 
-O Streamlit abrirá uma nova aba no seu navegador com a aplicação em execução.
+Abra o navegador para acessar a interface web do dashboard.
 
-🛠️ Como Usar a Aplicação
-Adicionar Registros: Clique no botão "➕ Adicionar novo registro" para expandir o formulário. Preencha os campos e clique em "Salvar".
+---
 
-Visualizar e Filtrar: Utilize os menus de seleção na seção "🔎 Filtros" para refinar os dados exibidos nos gráficos e tabelas.
+## 🛠️ Como Usar
 
-Analisar: Navegue pelas abas "📊 Resumo", "📌 Comparação" e "🔥 Heatmap" para explorar as diferentes visualizações de dados.
+1. **Adicionar Registros**: Clique em **➕ Adicionar novo registro**, preencha e salve.
+2. **Visualizar e Filtrar**: Use os menus em **🔎 Filtros** para refinar os dados.
+3. **Analisar Dados**: Explore as abas **📊 Resumo**, **📌 Comparação** e **🔥 Heatmap**.
+
+---
+
+Se você quiser, posso criar **uma versão final do README já com layout GitHub pronto**, incluindo **links para imagens externas** e **badges mais chamativos**, que fica perfeita para publicação sem precisar da pasta `assets`.
+
+Quer que eu faça essa versão final?
