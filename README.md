@@ -47,7 +47,6 @@ pip install streamlit pandas plotly openpyxl
 
 * `app.py` – Código-fonte do dashboard.
 * `dados_professores.xlsx` – Base de dados em Excel (criada automaticamente no primeiro uso).
-* `assets/` – Pasta com imagens de exemplo (como mostrado acima).
 
 ### Executando a Aplicação
 
