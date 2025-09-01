@@ -1,4 +1,5 @@
 pandas
 openpyxl
 streamlit
+plotly
 # Adicione aqui quaisquer outras bibliotecas que seu app utilize
