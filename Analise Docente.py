@@ -84,7 +84,7 @@ with st.expander("➕ Adicionar novo registro", expanded=False):
 
         # Coluna 2: dados acadêmicos
         with col2:
-            carga_horaria = st.selectbox("⏰ Carga Horária (em horas)", ["15h", "30h", "45h", "60h", "90h"])
+            carga_horaria = st.selectbox("⏰ Carga Horária (em horas)", ["15h","20h", "30h", "45h", "60h", "90h"])
             semestre = st.text_input("🗓️ Semestre (ex.: 2025.1)")
             ano = semestre.split(".")[0] if semestre else ""   # Extrai apenas o ano (antes do ponto)
             alunos = st.number_input("👥 Nº de Alunos", min_value=0, step=1)
@@ -259,3 +259,4 @@ with abas[2]:
                          aspect="auto",
                          color_continuous_scale="Oranges")
         st.plotly_chart(fig2, use_container_width=True)
+
