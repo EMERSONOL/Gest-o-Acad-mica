@@ -120,18 +120,59 @@ with st.expander("➕ Adicionar novo registro", expanded=False):
 
 
 # =================================================
-# 🔹 GERENCIAMENTO DA BASE DE DADOS (NOVO CÓDIGO)
+# 🔹 GERENCIAMENTO DA BASE DE DADOS
 # =================================================
-with st.expander("🗑️ Gerenciamento da Base", expanded=False):
-    st.subheader("Limpar Base de Dados")
+with st.expander("🗑️ Gerenciamento de Registros", expanded=False):
+    st.subheader("Excluir um Registro Específico")
+
+    if not df.empty:
+        # Cria listas únicas para seleção
+        semestres_para_excluir = sorted(df["Semestre"].astype(str).unique().tolist())
+        
+        # Seletores para identificar o registro
+        semestre_selecionado = st.selectbox("Selecione o Semestre do registro a ser excluído:", semestres_para_excluir)
+        
+        disciplinas_filtradas = sorted(df[df["Semestre"] == semestre_selecionado]["Disciplina"].unique().tolist())
+        disciplina_selecionada = st.selectbox("Selecione a Disciplina:", disciplinas_filtradas)
+
+        professores_filtrados = sorted(df[(df["Semestre"] == semestre_selecionado) & (df["Disciplina"] == disciplina_selecionada)]["Professor"].unique().tolist())
+        professor_selecionado = st.selectbox("Selecione o Professor:", professores_filtrados)
+
+        # Confirmação para exclusão única
+        confirmacao_exclusao_unica = st.checkbox("Confirmo que desejo apagar este registro específico.")
+
+        if st.button("Excluir Registro Selecionado"):
+            if confirmacao_exclusao_unica:
+                # Encontra o índice da linha para deletar
+                index_to_drop = df[
+                    (df["Semestre"] == semestre_selecionado) &
+                    (df["Disciplina"] == disciplina_selecionada) &
+                    (df["Professor"] == professor_selecionado)
+                ].index
+
+                if not index_to_drop.empty:
+                    df = df.drop(index_to_drop)
+                    salvar_dados(df)
+                    st.success("✅ Registro excluído com sucesso!")
+                    st.experimental_rerun()
+                else:
+                    st.error("❌ Registro não encontrado.")
+            else:
+                st.warning("⚠️ Marque a caixa de confirmação para excluir o registro.")
+    else:
+        st.info("Não há registros para excluir.")
+
+    st.markdown("---") 
+
+    st.subheader("Limpar Base de Dados Completa")
     
-    confirmacao = st.checkbox("Confirmo que desejo apagar PERMANENTEMENTE todos os dados cadastrados.")
+    confirmacao_limpeza_total = st.checkbox("Confirmo que desejo apagar PERMANENTEMENTE todos os dados cadastrados.")
 
     if st.button("Limpar todos os dados"):
-        if confirmacao:
+        if confirmacao_limpeza_total:
             df = limpar_dados()
             st.warning("⚠️ Todos os registros foram apagados com sucesso!")
-            st.experimental_rerun() # Força a atualização da página
+            st.experimental_rerun()
         else:
             st.error("❌ Marque a opção de confirmação antes de apagar os dados.")
 
@@ -160,8 +201,8 @@ st.subheader("🔎 Filtros")
 
 if not df.empty:
     # Gera listas únicas para os filtros
-    semestres_disp = sorted(df["Semestre"].unique().tolist())
-    anos_disp = sorted(df["Ano"].unique().tolist())
+    semestres_disp = sorted(df["Semestre"].astype(str).unique().tolist())
+    anos_disp = sorted(df["Ano"].astype(str).unique().tolist())
     professores_disp = sorted(df["Professor"].unique().tolist())
     disciplinas_disp = sorted(df["Disciplina"].unique().tolist())
 else:
@@ -177,7 +218,7 @@ filtro_disciplina = st.multiselect("📚 Filtrar por disciplina:", disciplinas_d
 if not df.empty:
     df_filtrado = df[
         (df["Semestre"].isin(filtro_semestre)) &
-        (df["Ano"].isin(filtro_ano)) &
+        (df["Ano"].astype(str).isin(filtro_ano)) &
         (df["Professor"].isin(filtro_professor)) &
         (df["Disciplina"].isin(filtro_disciplina))
     ]
@@ -289,3 +330,4 @@ else:
                          aspect="auto",
                          color_continuous_scale="Oranges")
         st.plotly_chart(fig2, use_container_width=True)
+
