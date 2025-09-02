@@ -106,12 +106,20 @@ with st.expander("➕ Adicionar novo registro", expanded=False):
         submitted = st.form_submit_button("Salvar")
 
         if submitted and semestre:
-            # Cria um novo registro no formato de DataFrame
-            novo = pd.DataFrame([[professor, disciplina, categoria, carga_horaria, semestre, ano, alunos]],
-                                  columns=df.columns)
+            # Cria um novo registro no formato de dicionário para maior robustez
+            novo_registro = {
+                "Professor": professor,
+                "Disciplina": disciplina,
+                "Categoria": categoria,
+                "Carga Horária": carga_horaria,
+                "Semestre": semestre,
+                "Ano": ano,
+                "Nº de Alunos": alunos
+            }
+            novo_df = pd.DataFrame([novo_registro])
 
             # Concatena o novo registro com a base existente
-            df = pd.concat([df, novo], ignore_index=True)
+            df = pd.concat([df, novo_df], ignore_index=True)
 
             # Salva a nova versão da base
             salvar_dados(df)
@@ -330,4 +338,3 @@ else:
                          aspect="auto",
                          color_continuous_scale="Oranges")
         st.plotly_chart(fig2, use_container_width=True)
-
