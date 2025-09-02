@@ -1,5 +1,5 @@
 # ==============================
-#    Sistema de Gestão Acadêmica
+# 📊 Sistema de Gestão Acadêmica
 # ==============================
 
 # --- Importação de bibliotecas ---
@@ -33,6 +33,19 @@ def salvar_dados(df):
     Sobrescreve o arquivo anterior.
     """
     df.to_excel("dados_professores.xlsx", index=False)
+
+# --- Função para limpar dados (resetar base) ---
+def limpar_dados():
+    """
+    Remove todos os registros da base,
+    mantendo apenas as colunas padrão.
+    """
+    df_vazio = pd.DataFrame(columns=[
+        "Professor", "Disciplina", "Categoria", "Carga Horária",
+        "Semestre", "Ano", "Nº de Alunos"
+    ])
+    salvar_dados(df_vazio) # Sobrescreve com base limpa
+    return df_vazio
 
 
 # =================================================
@@ -84,10 +97,10 @@ with st.expander("➕ Adicionar novo registro", expanded=False):
 
         # Coluna 2: dados acadêmicos
         with col2:
+            carga_horaria = st.selectbox("⏰ Carga Horária (em horas)", ["15h", "30h", "45h", "60h", "90h"])
             semestre = st.text_input("🗓️ Semestre (ex.: 2025.1)")
             ano = semestre.split(".")[0] if semestre else ""   # Extrai apenas o ano (antes do ponto)
             alunos = st.number_input("👥 Nº de Alunos", min_value=0, step=1)
-            carga_horaria = st.selectbox("⏰ Carga Horária (em horas)", ["15h","20h", "30h", "45h", "60h", "90h"])
 
         # Botão de salvar
         submitted = st.form_submit_button("Salvar")
@@ -95,7 +108,7 @@ with st.expander("➕ Adicionar novo registro", expanded=False):
         if submitted and semestre:
             # Cria um novo registro no formato de DataFrame
             novo = pd.DataFrame([[professor, disciplina, categoria, carga_horaria, semestre, ano, alunos]],
-                                columns=df.columns)
+                                  columns=df.columns)
 
             # Concatena o novo registro com a base existente
             df = pd.concat([df, novo], ignore_index=True)
@@ -104,6 +117,23 @@ with st.expander("➕ Adicionar novo registro", expanded=False):
             salvar_dados(df)
 
             st.success("✅ Registro adicionado com sucesso!")
+
+
+# =================================================
+# 🔹 GERENCIAMENTO DA BASE DE DADOS (NOVO CÓDIGO)
+# =================================================
+with st.expander("🗑️ Gerenciamento da Base", expanded=False):
+    st.subheader("Limpar Base de Dados")
+    
+    confirmacao = st.checkbox("Confirmo que desejo apagar PERMANENTEMENTE todos os dados cadastrados.")
+
+    if st.button("Limpar todos os dados"):
+        if confirmacao:
+            df = limpar_dados()
+            st.warning("⚠️ Todos os registros foram apagados com sucesso!")
+            st.experimental_rerun() # Força a atualização da página
+        else:
+            st.error("❌ Marque a opção de confirmação antes de apagar os dados.")
 
 
 # =================================================
@@ -130,10 +160,10 @@ st.subheader("🔎 Filtros")
 
 if not df.empty:
     # Gera listas únicas para os filtros
-    semestres_disp = df["Semestre"].unique().tolist()
-    anos_disp = df["Ano"].unique().tolist()
-    professores_disp = df["Professor"].unique().tolist()
-    disciplinas_disp = df["Disciplina"].unique().tolist()
+    semestres_disp = sorted(df["Semestre"].unique().tolist())
+    anos_disp = sorted(df["Ano"].unique().tolist())
+    professores_disp = sorted(df["Professor"].unique().tolist())
+    disciplinas_disp = sorted(df["Disciplina"].unique().tolist())
 else:
     semestres_disp, anos_disp, professores_disp, disciplinas_disp = [], [], [], []
 
@@ -160,15 +190,16 @@ else:
 # =================================================
 st.subheader("📈 Análises e Visualizações")
 
-# Cria abas de navegação
-abas = st.tabs(["📊 Resumo", "📌 Comparação", "🔥 Heatmap"])
+if df_filtrado.empty:
+    st.warning("Nenhum dado corresponde aos filtros selecionados.")
+else:
+    # Cria abas de navegação
+    abas = st.tabs(["📊 Resumo", "📌 Comparação", "🔥 Heatmap"])
 
-
-# -------------------------------
-# Aba 1 - Resumo
-# -------------------------------
-with abas[0]:
-    if not df_filtrado.empty:
+    # -------------------------------
+    # Aba 1 - Resumo
+    # -------------------------------
+    with abas[0]:
         # Usuário escolhe como agrupar os dados
         opcao = st.selectbox("Agrupar por:", ["Professor", "Disciplina", "Semestre", "Ano"])
 
@@ -193,50 +224,49 @@ with abas[0]:
         st.plotly_chart(fig, use_container_width=True)
 
 
-# -------------------------------
-# Aba 2 - Comparação
-# -------------------------------
-with abas[1]:
-    # Usuário escolhe se quer comparar professores ou disciplinas
-    tipo_comparacao = st.radio("Comparar por:", ["Professor", "Disciplina"])
-    
-    # Comparação entre 2 professores
-    if tipo_comparacao == "Professor":
-        profs = st.multiselect("Escolha até 2 professores:", professores_disp, default=professores_disp[:2])
-        if len(profs) == 2:
-            df_comp = df_filtrado[df_filtrado["Professor"].isin(profs)]
+    # -------------------------------
+    # Aba 2 - Comparação
+    # -------------------------------
+    with abas[1]:
+        # Usuário escolhe se quer comparar professores ou disciplinas
+        tipo_comparacao = st.radio("Comparar por:", ["Professor", "Disciplina"])
+        
+        # Comparação entre 2 professores
+        if tipo_comparacao == "Professor":
+            profs = st.multiselect("Escolha até 2 professores:", professores_disp, max_selections=2, default=professores_disp[:2] if len(professores_disp) >= 2 else [])
+            if len(profs) == 2:
+                df_comp = df_filtrado[df_filtrado["Professor"].isin(profs)]
 
-            # Gráfico de barras
-            fig = px.bar(df_comp, x="Semestre", y="Nº de Alunos", color="Professor", barmode="group",
-                         title="Comparação de Professores por Semestre")
-            st.plotly_chart(fig, use_container_width=True)
+                # Gráfico de barras
+                fig = px.bar(df_comp, x="Semestre", y="Nº de Alunos", color="Professor", barmode="group",
+                             title="Comparação de Professores por Semestre")
+                st.plotly_chart(fig, use_container_width=True)
 
-            # Gráfico de linha
-            fig = px.line(df_comp, x="Semestre", y="Nº de Alunos", color="Professor", markers=True,
-                          title="Evolução de Professores ao longo dos semestres")
-            st.plotly_chart(fig, use_container_width=True)
+                # Gráfico de linha
+                fig = px.line(df_comp, x="Semestre", y="Nº de Alunos", color="Professor", markers=True,
+                              title="Evolução de Professores ao longo dos semestres")
+                st.plotly_chart(fig, use_container_width=True)
 
-    # Comparação entre 2 disciplinas
-    elif tipo_comparacao == "Disciplina":
-        discs = st.multiselect("Escolha até 2 disciplinas:", disciplinas_disp, default=disciplinas_disp[:2])
-        if len(discs) == 2:
-            df_comp = df_filtrado[df_filtrado["Disciplina"].isin(discs)]
+        # Comparação entre 2 disciplinas
+        elif tipo_comparacao == "Disciplina":
+            discs = st.multiselect("Escolha até 2 disciplinas:", disciplinas_disp, max_selections=2, default=disciplinas_disp[:2] if len(disciplinas_disp) >= 2 else [])
+            if len(discs) == 2:
+                df_comp = df_filtrado[df_filtrado["Disciplina"].isin(discs)]
 
-            fig = px.bar(df_comp, x="Semestre", y="Nº de Alunos", color="Disciplina", barmode="group",
-                         title="Comparação de Disciplinas por Semestre")
-            st.plotly_chart(fig, use_container_width=True)
+                fig = px.bar(df_comp, x="Semestre", y="Nº de Alunos", color="Disciplina", barmode="group",
+                             title="Comparação de Disciplinas por Semestre")
+                st.plotly_chart(fig, use_container_width=True)
 
-            fig = px.line(df_comp, x="Semestre", y="Nº de Alunos", color="Disciplina", markers=True,
-                          title="Evolução de Disciplinas ao longo dos semestres")
-            st.plotly_chart(fig, use_container_width=True)
+                fig = px.line(df_comp, x="Semestre", y="Nº de Alunos", color="Disciplina", markers=True,
+                              title="Evolução de Disciplinas ao longo dos semestres")
+                st.plotly_chart(fig, use_container_width=True)
 
 
-# -------------------------------
-# Aba 3 - Heatmap
-# -------------------------------
-with abas[2]:
-    st.write("🔥 **Mapa de Calor - Semestre x Disciplina**")
-    if not df_filtrado.empty:
+    # -------------------------------
+    # Aba 3 - Heatmap
+    # -------------------------------
+    with abas[2]:
+        st.write("🔥 **Mapa de Calor - Semestre x Disciplina**")
         # Heatmap de alunos por disciplina e semestre
         tabela_heatmap = df_filtrado.pivot_table(index="Disciplina", columns="Semestre",
                                                  values="Nº de Alunos", aggfunc="sum", fill_value=0)
@@ -259,5 +289,3 @@ with abas[2]:
                          aspect="auto",
                          color_continuous_scale="Oranges")
         st.plotly_chart(fig2, use_container_width=True)
-
-
